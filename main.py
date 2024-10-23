@@ -103,14 +103,14 @@ app.run(port=5000,host='localhost',debug=True)
 @app.route("/carros/<id>", methods=["DELETE"])
 def delatar_carros(id):
     carro_objetos = carros.query.filter_by(id=id).first()
+    try:
+        mybd.session.delete(carro_objetos)
+        mybd.session.commit()
 
-    mybd.session.delete(carro_objetos)
-    mybd.session.commit()
-
-    return gera_response(200, "carro", carro_objetos.to_json(), "deletado com sucesso")
-except Exception as e:
-    print('Erro', e)
-    return gera_response(400, "carro", {}, "Erro ao deletar")
+        return gera_response(200, "carro", carro_objetos.to_json(), "deletado com sucesso")
+    except Exception as e:
+        print('Erro', e)
+        return gera_response(400, "carro", {}, "Erro ao deletar")
 
 def gera_response(status, nome_conteudo, conteudo,mensagem=False):
     body = {}
@@ -120,6 +120,10 @@ def gera_response(status, nome_conteudo, conteudo,mensagem=False):
         body["mensagem"] = mensagem
 
         return Response(json.dumps(body), status=status, mimetype="application/json")
+    
+    ######
+
+    ## pip install mysql-
 
 
 
